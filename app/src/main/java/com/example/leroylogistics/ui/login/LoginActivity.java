@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -25,13 +26,22 @@ import android.widget.Toast;
 
 import com.example.leroylogistics.R;
 //import com.example.leroylogistics.data.workersDB.WorkerGridViewActivity;
+import com.example.leroylogistics.data.model.Worker;
+import com.example.leroylogistics.data.workersDB.GoodActivity;
 import com.example.leroylogistics.data.workersDB.WorkerListViewActivity;
+import com.example.leroylogistics.data.workersDB.WorkersDBHelper;
 import com.example.leroylogistics.ui.login.LoginViewModel;
 import com.example.leroylogistics.ui.login.LoginViewModelFactory;
 
+import java.util.List;
+
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String TAG = "codes";
     private LoginViewModel loginViewModel;
+    public  int isAdmin = 0;
+    private List<Worker> workerCodesList;
+    WorkersDBHelper dbHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,9 +55,23 @@ public class LoginActivity extends AppCompatActivity {
         final Button loginButton = findViewById(R.id.login);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
 
+        //Подлючаем БД и берем оттуда коды сотрудников
+        dbHelper = new WorkersDBHelper(this);
+
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
             public void onChanged(@Nullable LoginFormState loginFormState) {
+                //if (isAdmin == 0) usernameEditText.setError(getString(loginFormState.getUsernameError()));
+
+                for (Worker worker: workerCodesList){
+                    if (worker.getCode().equals(usernameEditText.getText().toString())){
+                        isAdmin = 1;
+                    }
+                    else if ("0000".equals(usernameEditText.getText().toString())){
+                        isAdmin = 2;
+                    }
+                }
+
                 if (loginFormState == null) {
                     return;
                 }
@@ -77,8 +101,14 @@ public class LoginActivity extends AppCompatActivity {
                 setResult(Activity.RESULT_OK);
 
                 //Complete and destroy login activity once successful
-                Intent intent = new Intent(getApplicationContext(), WorkerListViewActivity.class);
-                startActivity(intent);
+                if (isAdmin == 2) {
+                    Intent intent = new Intent(getApplicationContext(), WorkerListViewActivity.class);
+                    startActivity(intent);
+                }
+                else if (isAdmin == 1){
+                    Intent intent = new Intent(getApplicationContext(), GoodActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -90,12 +120,12 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // ignore
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
+                loginViewModel.loginDataChanged(workerCodesList, usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
             }
         };
@@ -121,6 +151,8 @@ public class LoginActivity extends AppCompatActivity {
                         passwordEditText.getText().toString());
             }
         });
+
+
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
@@ -131,5 +163,21 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dbHelper.close();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        workerCodesList = dbHelper.getAllWorkerCodes();
+
+        for (Worker worker: workerCodesList){
+            Log.d(TAG, "code " + worker.getCode());
+        }
     }
 }

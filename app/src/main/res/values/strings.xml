@@ -13,6 +13,8 @@
     <string name="add_record">Добавить запись</string>
     <string name="delete_record">Удалить запись</string>
     <string name="action_settings">Settings</string>
+    <string name="login_worker">Вы - работник склада</string>
+    <string name="login_admin">Вы - начальник отедла логистики</string>
 
     <string name="action_insert_dummy_data">Вставить данные</string>
     <string name="action_delete_all_entries">Удалить всех гостей</string>

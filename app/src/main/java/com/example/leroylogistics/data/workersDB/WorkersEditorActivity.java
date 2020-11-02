@@ -21,6 +21,7 @@ import com.example.leroylogistics.R;
 
 public class WorkersEditorActivity extends AppCompatActivity {
     private EditText mNameEditText;
+    private EditText mCodeEditText;
 
     private Spinner spinner;
 
@@ -36,6 +37,7 @@ public class WorkersEditorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_editor);
 
         mNameEditText = (EditText) findViewById(R.id.edit_guest_name);
+        mCodeEditText = (EditText) findViewById(R.id.edit_worker_code);
         spinner = (Spinner) findViewById(R.id.spinner_gender);
 
         setupSpinner();
@@ -61,13 +63,13 @@ public class WorkersEditorActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals(getString(R.string.level_off))) {
 //                        mLevel = 0; // нет доступа
-                        mLevel = WorkersDBData.GuestEntry.CONTROL_OFF; // нет доступа
+                        mLevel = WorkerEntry.CONTROL_OFF; // нет доступа
                     } else if (selection.equals(getString(R.string.level_on))) {
 //                        mGender = 1; // есть частичный доступ
-                        mLevel = WorkersDBData.GuestEntry.CONTROL_ON; // Частичный доступ
+                        mLevel = WorkerEntry.CONTROL_ON; // Частичный доступ
                     } else {
 //                        mGender = 2; // Полный доступ
-                        mLevel = WorkersDBData.GuestEntry.CONTROL_FULL; // Полный доступ
+                        mLevel = WorkerEntry.CONTROL_FULL; // Полный доступ
                     }
                 }
             }
@@ -93,7 +95,7 @@ public class WorkersEditorActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
-                insertGuest();
+                insertWorker();
                 // Закрываем активность
                 finish();
                 return true;
@@ -128,26 +130,28 @@ public class WorkersEditorActivity extends AppCompatActivity {
     /**
      * Сохраняем введенные данные в базе данных.
      */
-    private void insertGuest() {
+    private void insertWorker() {
         // Считываем данные из текстовых полей
         String name = mNameEditText.getText().toString().trim();
+        String code = mCodeEditText.getText().toString().trim();
 
         WorkersDBHelper mDbHelper = new WorkersDBHelper(this);
 
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(GuestEntry.COLUMN_INITIALS, name);
-        values.put(GuestEntry.COLUMN_LEVEL, levelIntToString(mLevel));
+        values.put(WorkerEntry.COLUMN_CODE, code);
+        values.put(WorkerEntry.COLUMN_INITIALS, name);
+        values.put(WorkerEntry.COLUMN_LEVEL, levelIntToString(mLevel));
         // Вставляем новый ряд в базу данных и запоминаем его идентификатор
-        long newRowId = db.insert(GuestEntry.DB_TABLE, null, values);
+        long newRowId = db.insert(WorkerEntry.WORKER_TABLE_NAME, null, values);
 
         // Выводим сообщение в успешном случае или при ошибке
         if (newRowId == -1) {
             // Если ID  -1, значит произошла ошибка
-            Toast.makeText(this, "Ошибка при заведении гостя", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Ошибка при заведении сотрудника", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Гость заведён под номером: " + newRowId, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Сотрудник заведён под номером: " + newRowId, Toast.LENGTH_SHORT).show();
         }
     }
 }

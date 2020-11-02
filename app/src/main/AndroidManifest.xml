@@ -21,6 +21,7 @@
         <activity android:name=".data.workersDB.WorkerGridViewActivity" />
         <activity android:name=".data.workersDB.WorkerListViewActivity" />
         <activity android:name=".data.workersDB.WorkersEditorActivity" />
+        <activity android:name=".data.workersDB.GoodActivity" />
     </application>
 
 </manifest>

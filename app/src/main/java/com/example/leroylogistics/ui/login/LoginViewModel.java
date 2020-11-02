@@ -4,15 +4,24 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 
 import com.example.leroylogistics.data.LoginRepository;
 import com.example.leroylogistics.data.Result;
 import com.example.leroylogistics.data.model.LoggedInUser;
 import com.example.leroylogistics.R;
+import com.example.leroylogistics.data.model.Worker;
+import com.example.leroylogistics.data.workersDB.WorkersDBHelper;
+
+import java.util.List;
 
 public class LoginViewModel extends ViewModel {
 
+    private static final String TAG = "codes";
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private LoginRepository loginRepository;
@@ -41,10 +50,17 @@ public class LoginViewModel extends ViewModel {
         }
     }
 
-    public void loginDataChanged(String username, String password) {
-        if (!isUserNameValid(username)) {
+    public void loginDataChanged(List<Worker> workerCodesList, String username, String password) {
+        if (isUserNameValid(workerCodesList, username) == 0) {
             loginFormState.setValue(new LoginFormState(R.string.invalid_username, null));
-        } else if (!isPasswordValid(password)) {
+        }
+        /*else if (isUserNameValid(workerCodesList, username) == 1){
+            loginFormState.setValue(new LoginFormState(R.string.login_worker, null));
+        }
+        else if (isUserNameValid(workerCodesList, username) == 2){
+            loginFormState.setValue(new LoginFormState(R.string.login_admin, null));
+        }*/
+        else if (!isPasswordValid(password)) {
             loginFormState.setValue(new LoginFormState(null, R.string.invalid_password));
         } else {
             loginFormState.setValue(new LoginFormState(true));
@@ -52,14 +68,23 @@ public class LoginViewModel extends ViewModel {
     }
 
     // A placeholder username validation check
-    private boolean isUserNameValid(String username) {
-        if (username == null) {
-            return false;
+    private int isUserNameValid(List<Worker> workerCodesList, String username) {
+
+        if (username != null) {
+            for (Worker worker: workerCodesList) {
+                Log.d(TAG, "Проверяю код " + worker.getCode() + " и " + username);
+                if(worker.getCode().equals(username)){
+                    Log.d(TAG, "Есть совпадение!");
+                    return 1;
+                }
+            }
         }
-        if (username.contains("@")) {
-            return Patterns.EMAIL_ADDRESS.matcher(username).matches();
-        } else {
-            return !username.trim().isEmpty();
+        if (username.equals("0000")){
+            Log.d(TAG, "Есть совпадение!");
+            return 2;
+        }
+        else{
+            return 0;
         }
     }
 
@@ -67,4 +92,6 @@ public class LoginViewModel extends ViewModel {
     private boolean isPasswordValid(String password) {
         return password != null && password.trim().length() > 5;
     }
+
+
 }
