@@ -8,7 +8,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.wid get.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -44,7 +44,7 @@ public class WorkerGridViewActivity extends Activity implements AdapterView.OnIt
         mSelectText = (TextView) findViewById(R.id.info);
         final GridView g = (GridView) findViewById(R.id.workersGridView);
         mAdapter = new WorkerDataAdapter(getApplicationContext(),
-                R.layout.list_gridview_item);
+                R.layout.list__item);
         g.setAdapter(mAdapter);
         g.setOnItemSelectedListener(this);
         g.setOnItemClickListener(new OnItemClickListener() {

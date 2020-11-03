@@ -23,9 +23,9 @@
             android:paddingLeft="4dp">
 
             <EditText
-                android:id="@+id/edit_worker_code"
+                android:id="@+id/edit_good_code"
                 style="@style/EditorFieldStyle"
-                android:hint="Код сотрудника"
+                android:hint="Код товара"
                 android:inputType="textCapWords" />
 
         </LinearLayout>
@@ -48,52 +48,87 @@
             android:paddingLeft="4dp">
 
             <EditText
-                android:id="@+id/edit_guest_name"
+                android:id="@+id/edit_good_name"
                 style="@style/EditorFieldStyle"
-                android:hint="ФИО"
+                android:hint="Наименование"
                 android:inputType="textCapWords" />
 
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/container_gender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
             style="@style/CategoryStyle"
-            android:text="Уровень доступа" />
+            />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingLeft="4dp">
 
-            <Spinner
-                android:id="@+id/spinner_gender"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:paddingRight="16dp"
-                android:spinnerMode="dropdown" />
+            <EditText
+                android:id="@+id/edit_good_location"
+                style="@style/EditorFieldStyle"
+                android:hint="Расположение"
+                android:inputType="textCapWords" />
+
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/container_age"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <TextView
+            style="@style/CategoryStyle"
+            />
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
+            android:orientation="vertical"
             android:paddingLeft="4dp">
 
-        </RelativeLayout>
+            <EditText
+                android:id="@+id/edit_good_quantity"
+                style="@style/EditorFieldStyle"
+                android:hint="Количество"
+                android:inputType="textCapWords" />
+
+        </LinearLayout>
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/CategoryStyle"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:paddingLeft="4dp">
+
+            <EditText
+                android:id="@+id/edit_good_minimal_remain"
+                style="@style/EditorFieldStyle"
+                android:hint="Минимальный остаток"
+                android:inputType="textCapWords" />
+
+        </LinearLayout>
+    </LinearLayout>
+
 </LinearLayout>

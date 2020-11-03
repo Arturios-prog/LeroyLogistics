@@ -1,4 +1,4 @@
-package com.example.leroylogistics.data.workersDB;
+package com.example.leroylogistics.data.DB;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
-import com.example.leroylogistics.data.workersDB.WorkersDBData.*;
+import com.example.leroylogistics.data.DB.DBData.*;
 
 import com.example.leroylogistics.R;
 
@@ -135,7 +135,7 @@ public class WorkersEditorActivity extends AppCompatActivity {
         String name = mNameEditText.getText().toString().trim();
         String code = mCodeEditText.getText().toString().trim();
 
-        WorkersDBHelper mDbHelper = new WorkersDBHelper(this);
+        DBHelper mDbHelper = new DBHelper(this);
 
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 

@@ -1,4 +1,4 @@
-package com.example.leroylogistics.data.workersDB;
+package com.example.leroylogistics.data.DB;
 
 import android.content.Context;
 import android.view.View;

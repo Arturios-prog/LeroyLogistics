@@ -1,4 +1,4 @@
-package com.example.leroylogistics.data.workersDB;
+package com.example.leroylogistics.data.DB;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -11,13 +11,11 @@ import android.widget.SimpleCursorAdapter;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.leroylogistics.R;
-import com.example.leroylogistics.data.workersDB.WorkersDBData.*;
+import com.example.leroylogistics.data.DB.DBData.*;
 
 public class WorkerListViewActivity extends AppCompatActivity {
-    private static final int CM_DELETE_ID = 1;
-    private WorkersDBHelper mDbHelper;
     ListView lvData;
-    WorkersDBHelper dbHelper;
+    DBHelper dbHelper;
     SQLiteDatabase db;
     SimpleCursorAdapter scAdapter;
     Cursor cursor;
@@ -28,7 +26,7 @@ public class WorkerListViewActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workers2_db);
-        dbHelper = new WorkersDBHelper(this);
+        dbHelper = new DBHelper(this);
         //registerForContextMenu(lvData);
     }
 
@@ -50,7 +48,7 @@ public class WorkerListViewActivity extends AppCompatActivity {
         startManagingCursor(cursor);
 
         // создааем адаптер и настраиваем список
-            scAdapter = new SimpleCursorAdapter(this, R.layout.list_listview_item, cursor, from, to);
+            scAdapter = new SimpleCursorAdapter(this, R.layout.list_worker_item, cursor, from, to);
         lvData = (ListView) findViewById(R.id.lvData);
         lvData.setAdapter(scAdapter);
     }

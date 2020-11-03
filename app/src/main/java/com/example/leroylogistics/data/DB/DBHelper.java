@@ -1,21 +1,20 @@
-package com.example.leroylogistics.data.workersDB;
+package com.example.leroylogistics.data.DB;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.example.leroylogistics.data.model.Worker;
-import com.example.leroylogistics.data.workersDB.WorkersDBData.*;
+import com.example.leroylogistics.data.DB.DBData.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.leroylogistics.data.workersDB.WorkersDBData.DB_NAME;
-import static com.example.leroylogistics.data.workersDB.WorkersDBData.DB_VERSION;
+import static com.example.leroylogistics.data.DB.DBData.DB_NAME;
+import static com.example.leroylogistics.data.DB.DBData.DB_VERSION;
 
-public class WorkersDBHelper extends SQLiteOpenHelper {
+public class DBHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_WORKER =
             "create table " + WorkerEntry.WORKER_TABLE_NAME + "(" +
@@ -27,17 +26,17 @@ public class WorkersDBHelper extends SQLiteOpenHelper {
     public static final String CREATE_TABLE_GOOD =
             "create table " + GoodEntry.GOOD_TABLE_NAME + "(" +
                     GoodEntry.COLUMN_ID + " integer primary key autoincrement, " +
-                    GoodEntry.COLUMN_CODE + " integer not null, " +
+                    GoodEntry.COLUMN_CODE + " text not null, " +
                     GoodEntry.COLUMN_NAME + " text not null, " +
-                    GoodEntry.COLUMN_AMOUNT + " integer not null, " +
+                    GoodEntry.COLUMN_QUANTITY + " text not null, " +
                     GoodEntry.COLUMN_LOCATION + " text not null, " +
-                    GoodEntry.COLUMN_MINIMAL_REMAIN + " integer not null" +
+                    GoodEntry.COLUMN_MINIMAL_REMAIN + " text not null" +
                     ");";
     public static final String ADD_ADMIN = "INSERT INTO " + WorkerEntry.WORKER_TABLE_NAME +
             "(" + WorkerEntry.COLUMN_CODE +", " + WorkerEntry.COLUMN_INITIALS + ")"+ " values "
             + "(" + "'0000', " + "'Admin'" + ");";
 
-    public WorkersDBHelper(Context context ) {
+    public DBHelper(Context context ) {
         super(context, DB_NAME, null, DB_VERSION);
 
     }
@@ -47,7 +46,7 @@ public class WorkersDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_WORKER);
         db.execSQL(CREATE_TABLE_GOOD);
-        db.execSQL(ADD_ADMIN);
+        //db.execSQL(ADD_ADMIN);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

@@ -1,17 +1,9 @@
-package com.example.leroylogistics.data.workersDB;
+package com.example.leroylogistics.data.DB;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.BaseColumns;
-
-public class WorkersDBData {
+public class DBData {
 
     public static final String DB_NAME = "mydb";
-    public static final int DB_VERSION = 7;
+    public static final int DB_VERSION = 10;
 
     public static final class WorkerEntry {
 
@@ -32,7 +24,7 @@ public class WorkersDBData {
         public static final String COLUMN_CODE = "good_code";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_LOCATION = "location";
-        public static final String COLUMN_AMOUNT = "amount";
+        public static final String COLUMN_QUANTITY = "amount";
         public static final String COLUMN_MINIMAL_REMAIN = "minimal_remain";
     }
 }

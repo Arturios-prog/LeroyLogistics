@@ -27,11 +27,9 @@ import android.widget.Toast;
 import com.example.leroylogistics.R;
 //import com.example.leroylogistics.data.workersDB.WorkerGridViewActivity;
 import com.example.leroylogistics.data.model.Worker;
-import com.example.leroylogistics.data.workersDB.GoodActivity;
-import com.example.leroylogistics.data.workersDB.WorkerListViewActivity;
-import com.example.leroylogistics.data.workersDB.WorkersDBHelper;
-import com.example.leroylogistics.ui.login.LoginViewModel;
-import com.example.leroylogistics.ui.login.LoginViewModelFactory;
+import com.example.leroylogistics.data.DB.GoodActivity;
+import com.example.leroylogistics.data.DB.WorkerListViewActivity;
+import com.example.leroylogistics.data.DB.DBHelper;
 
 import java.util.List;
 
@@ -41,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     private LoginViewModel loginViewModel;
     public  int isAdmin = 0;
     private List<Worker> workerCodesList;
-    WorkersDBHelper dbHelper;
+    DBHelper dbHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,20 +54,26 @@ public class LoginActivity extends AppCompatActivity {
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
 
         //Подлючаем БД и берем оттуда коды сотрудников
-        dbHelper = new WorkersDBHelper(this);
+        dbHelper = new DBHelper(this);
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
             public void onChanged(@Nullable LoginFormState loginFormState) {
                 //if (isAdmin == 0) usernameEditText.setError(getString(loginFormState.getUsernameError()));
 
-                for (Worker worker: workerCodesList){
-                    if (worker.getCode().equals(usernameEditText.getText().toString())){
-                        isAdmin = 1;
+                if (workerCodesList!= null) {
+                    for (Worker worker : workerCodesList) {
+                        if (worker.getCode().equals(usernameEditText.getText().toString())) {
+                            isAdmin = 1;
+                        } else if ("0000".equals(usernameEditText.getText().toString())) {
+                            isAdmin = 2;
+                            Log.d(TAG, "Присвоил админку");
+                        }
                     }
-                    else if ("0000".equals(usernameEditText.getText().toString())){
-                        isAdmin = 2;
-                    }
+                }
+                if ("0000".equals(usernameEditText.getText().toString())) {
+                    isAdmin = 2;
+                    Log.d(TAG, "Присвоил админку");
                 }
 
                 if (loginFormState == null) {
@@ -103,10 +107,12 @@ public class LoginActivity extends AppCompatActivity {
                 //Complete and destroy login activity once successful
                 if (isAdmin == 2) {
                     Intent intent = new Intent(getApplicationContext(), WorkerListViewActivity.class);
+                    Log.d(TAG, "Переходим в активность сотрудников");
                     startActivity(intent);
                 }
                 else if (isAdmin == 1){
                     Intent intent = new Intent(getApplicationContext(), GoodActivity.class);
+                    Log.d(TAG, "Переходим в активность товаров");
                     startActivity(intent);
                 }
             }

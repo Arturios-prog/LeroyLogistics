@@ -4,18 +4,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
-import android.util.Patterns;
 
 import com.example.leroylogistics.data.LoginRepository;
 import com.example.leroylogistics.data.Result;
 import com.example.leroylogistics.data.model.LoggedInUser;
 import com.example.leroylogistics.R;
 import com.example.leroylogistics.data.model.Worker;
-import com.example.leroylogistics.data.workersDB.WorkersDBHelper;
 
 import java.util.List;
 
@@ -71,11 +66,13 @@ public class LoginViewModel extends ViewModel {
     private int isUserNameValid(List<Worker> workerCodesList, String username) {
 
         if (username != null) {
-            for (Worker worker: workerCodesList) {
-                Log.d(TAG, "Проверяю код " + worker.getCode() + " и " + username);
-                if(worker.getCode().equals(username)){
-                    Log.d(TAG, "Есть совпадение!");
-                    return 1;
+            if (workerCodesList != null) {
+                for (Worker worker : workerCodesList) {
+                    Log.d(TAG, "Проверяю код " + worker.getCode() + " и " + username);
+                    if (worker.getCode().equals(username)) {
+                        Log.d(TAG, "Есть совпадение!");
+                        return 1;
+                    }
                 }
             }
         }

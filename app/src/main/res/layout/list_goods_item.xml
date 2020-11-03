@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <TextView
+        android:id="@+id/textGoodCode"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginVertical="10dp"
+        android:text="Код"
+        android:layout_marginLeft="10dp"
+        android:textSize="18sp"
+         />
+
+    <TextView
+        android:id="@+id/textGoodName"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginVertical="10dp"
+        android:layout_marginLeft="40dp"
+        android:layout_toRightOf="@+id/textGoodCode"
+        android:text="Наименование"
+        android:textSize="18sp"
+        ></TextView>
+
+    <TextView
+        android:id="@+id/textGoodLocation"
+        android:layout_width="135dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginVertical="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_toRightOf="@+id/textGoodName"
+        android:text="Расположение"
+        android:textSize="18sp"
+        ></TextView>
+
+    <TextView
+        android:id="@+id/textGoodQuantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginVertical="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_toRightOf="@+id/textGoodLocation"
+        android:text="Количество"
+        android:textSize="18sp"
+        ></TextView>
+
+    <TextView
+        android:id="@+id/textGoodMinimalRemain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginVertical="10dp"
+        android:layout_marginRight="10dp"
+        android:text="Минимальный ост."
+        android:textSize="18sp"
+        ></TextView>
+</RelativeLayout>
