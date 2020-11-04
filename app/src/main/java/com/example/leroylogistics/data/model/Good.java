@@ -25,6 +25,9 @@ public class Good {
         this.minimalRemain = minimalRemain;
     }
 
+    public Good() {
+    }
+
     public void setId(int id) {
         this.id = id;
     }

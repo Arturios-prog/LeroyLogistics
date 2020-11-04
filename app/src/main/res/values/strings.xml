@@ -26,6 +26,7 @@
     <string name="level_on">Частичный доступ</string>
     <string name="level_full">Полный досутп</string>
 
+    <string name="edit_record">Редактировать запись</string>
     <string-array name="array_gender_options">
         <item>@string/level_off</item>
         <item>@string/level_on</item>

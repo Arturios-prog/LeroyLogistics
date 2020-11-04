@@ -1,9 +1,11 @@
 package com.example.leroylogistics.data.DB;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,12 +20,17 @@ import androidx.core.app.NavUtils;
 import com.example.leroylogistics.data.DB.DBData.*;
 
 import com.example.leroylogistics.R;
+import com.example.leroylogistics.data.model.Worker;
+
+import java.util.List;
 
 public class WorkersEditorActivity extends AppCompatActivity {
+    private static final String TAG = "worker";
     private EditText mNameEditText;
     private EditText mCodeEditText;
-
+    private List<Worker> workerList;
     private Spinner spinner;
+    private DBHelper dbHelper;
 
     /**
      * Уровень доступа для сотрудника. Возможные варианты:
@@ -35,13 +42,38 @@ public class WorkersEditorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
-
+        dbHelper = new DBHelper(this);
         mNameEditText = (EditText) findViewById(R.id.edit_guest_name);
         mCodeEditText = (EditText) findViewById(R.id.edit_worker_code);
         spinner = (Spinner) findViewById(R.id.spinner_gender);
-
         setupSpinner();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: Запустил");
+        workerList = dbHelper.getAllWorkers();
+        Log.d(TAG, "onStart: Получил");
+        Bundle arguments = getIntent().getExtras();
+        String codeIntent = arguments.get("workerCode").toString();
+        String nameIntent = arguments.get("workerName").toString();
+        String level = arguments.get("workerLevel").toString();
+        Log.d(TAG, "onStart: получаю интент");
+        for (Worker worker : workerList){
+            String id = arguments.get("workerId").toString();
+            Log.d(TAG, "onStart: получаю следующий id " + id);
+            if (Integer.toString(worker.getId()).equals(id)){
+
+                mNameEditText.setText(nameIntent);
+                mCodeEditText.setText(codeIntent);
+                if (level.equals("Полный")) spinner.setSelection(2);
+                else if (level.equals("Частичный")) spinner.setSelection(1);
+                else if (level.equals("-")) spinner.setSelection(0);
+            }
+        }
+    }
+
 
     /**
      * Настраиваем spinner для установки уровня доступа
@@ -95,6 +127,19 @@ public class WorkersEditorActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
+                Intent intent_save = getIntent();
+
+                workerList = dbHelper.getAllWorkers();
+                int id = intent_save.getExtras().getInt("workerId");
+                for (Worker worker : workerList){
+                    if (worker.getId() == id){
+                        Log.d(TAG, "onOptionsItemSelected: Сохраняю изменения");
+                        saveWorker(id);
+                        finish();
+                        return true;
+                    }
+                }
+                Log.d(TAG, "Я вставлю сотрудника");
                 insertWorker();
                 // Закрываем активность
                 finish();
@@ -152,6 +197,27 @@ public class WorkersEditorActivity extends AppCompatActivity {
             Toast.makeText(this, "Ошибка при заведении сотрудника", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Сотрудник заведён под номером: " + newRowId, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void saveWorker(int id) {
+        // Считываем данные из текстовых полей
+        String name = mNameEditText.getText().toString().trim();
+        String code = mCodeEditText.getText().toString().trim();
+        ContentValues values = new ContentValues();
+
+        values.put(WorkerEntry.COLUMN_CODE, code);
+        values.put(WorkerEntry.COLUMN_INITIALS, name);
+        values.put(WorkerEntry.COLUMN_LEVEL, levelIntToString(mLevel));
+
+        DBHelper mDbHelper = new DBHelper(this);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        long newRowId = db.update(WorkerEntry.WORKER_TABLE_NAME, values, "_id=" + id, null);
+        if (newRowId == -1) {
+            // Если ID  -1, значит произошла ошибка
+            Toast.makeText(this, "Ошибка при редактировании сотрудника", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Сотрудник отредактирован под номером: " + newRowId, Toast.LENGTH_SHORT).show();
         }
     }
 }

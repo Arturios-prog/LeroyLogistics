@@ -1,6 +1,7 @@
 package com.example.leroylogistics.data.DB;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -14,6 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 
 import com.example.leroylogistics.R;
+import com.example.leroylogistics.data.model.Good;
+
+import java.util.List;
 
 public class GoodEditorActivity extends AppCompatActivity {
     private EditText editTextCode;
@@ -22,17 +26,43 @@ public class GoodEditorActivity extends AppCompatActivity {
     private EditText editTextQuantity;
     private EditText editTextMinimalRemain;
 
+    DBHelper dbHelper;
+    private List<Good> goodList;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goods_editor);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
+        dbHelper = new DBHelper(this);
         editTextCode = (EditText) findViewById(R.id.edit_good_code);
         editTextName = (EditText) findViewById(R.id.edit_good_name);
         editTextLocation = (EditText) findViewById(R.id.edit_good_location);
         editTextQuantity = (EditText) findViewById(R.id.edit_good_quantity);
         editTextMinimalRemain = (EditText) findViewById(R.id.edit_good_minimal_remain);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        goodList = dbHelper.getAllGoods();
+
+        Bundle arguments = getIntent().getExtras();
+        String codeIntent = arguments.get("goodCode").toString();
+        String nameIntent = arguments.get("goodName").toString();
+        String locationIntent = arguments.get("goodLocation").toString();
+        String QuantityIntent = arguments.get("goodQuantity").toString();
+        String MinimalRemainIntent = arguments.get("goodMinimalRemain").toString();
+        for (Good good : goodList){
+            String id = arguments.get("goodId").toString();
+            if (Integer.toString(good.getId()).equals(id)){
+                editTextCode.setText(codeIntent);
+                editTextName.setText(nameIntent);
+                editTextLocation.setText(locationIntent);
+                editTextQuantity.setText(QuantityIntent);
+                editTextMinimalRemain.setText(MinimalRemainIntent);
+            }
+        }
     }
 
     @Override
@@ -49,6 +79,16 @@ public class GoodEditorActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
+                goodList = dbHelper.getAllGoods();
+                Intent intent = getIntent();
+                int id = intent.getExtras().getInt("goodId");
+                for (Good good : goodList){
+                if (good.getId() == id) {
+                    saveGood(id);
+                    finish();
+                    return true;
+                    }
+                }
                 insertGood();
                 // Закрываем активность
                 finish();
@@ -64,6 +104,37 @@ public class GoodEditorActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void saveGood(int id) {
+        // Считываем данные из текстовых полей
+        String code = editTextCode.getText().toString().trim();
+        String name = editTextName.getText().toString().trim();
+        String location = editTextLocation.getText().toString().trim();
+        String quantity = editTextQuantity.getText().toString().trim();
+        String minimalRemain = editTextMinimalRemain.getText().toString().trim();
+
+
+        DBHelper mDbHelper = new DBHelper(this);
+
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DBData.GoodEntry.COLUMN_CODE, code);
+        values.put(DBData.GoodEntry.COLUMN_NAME, name);
+        values.put(DBData.GoodEntry.COLUMN_LOCATION, location);
+        values.put(DBData.GoodEntry.COLUMN_QUANTITY, quantity);
+        values.put(DBData.GoodEntry.COLUMN_MINIMAL_REMAIN, minimalRemain);
+        // Вставляем новый ряд в базу данных и запоминаем его идентификатор
+        long newRowId = db.update(DBData.GoodEntry.GOOD_TABLE_NAME, values, "_id=" + id, null);
+
+        // Выводим сообщение в успешном случае или при ошибке
+        if (newRowId == -1) {
+            // Если ID  -1, значит произошла ошибка
+            Toast.makeText(this, "Ошибка при сохранении товара", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Товар сохранен под номером: " + newRowId, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void insertGood() {
