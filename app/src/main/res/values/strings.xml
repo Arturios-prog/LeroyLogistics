@@ -24,7 +24,7 @@
 
     <string name="level_off">Без уровня доступа</string>
     <string name="level_on">Частичный доступ</string>
-    <string name="level_full">Полный досутп</string>
+    <string name="level_full">Полный доступ</string>
 
     <string name="edit_record">Редактировать запись</string>
     <string-array name="array_gender_options">

@@ -39,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     private LoginViewModel loginViewModel;
     public  int isAdmin = 0;
     private List<Worker> workerCodesList;
+    private List<Worker> workerList;
     DBHelper dbHelper;
 
     @Override
@@ -111,7 +112,15 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if (isAdmin == 1){
+                    workerList = dbHelper.getAllWorkers();
                     Intent intent = new Intent(getApplicationContext(), GoodActivity.class);
+                    for (Worker worker : workerList){
+                        if ( worker.getCode().equals(usernameEditText.getText().toString())){
+                            intent.putExtra("currentWorkerLevel", worker.getLevel());
+                            Log.d(TAG, "onChanged: Передал доступ" + worker.getLevel());
+                        }
+                    }
+
                     Log.d(TAG, "Переходим в активность товаров");
                     startActivity(intent);
                 }

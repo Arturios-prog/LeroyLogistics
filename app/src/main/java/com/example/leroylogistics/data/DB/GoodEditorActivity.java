@@ -48,19 +48,31 @@ public class GoodEditorActivity extends AppCompatActivity {
         goodList = dbHelper.getAllGoods();
 
         Bundle arguments = getIntent().getExtras();
-        String codeIntent = arguments.get("goodCode").toString();
-        String nameIntent = arguments.get("goodName").toString();
-        String locationIntent = arguments.get("goodLocation").toString();
-        String QuantityIntent = arguments.get("goodQuantity").toString();
-        String MinimalRemainIntent = arguments.get("goodMinimalRemain").toString();
+
         for (Good good : goodList){
-            String id = arguments.get("goodId").toString();
-            if (Integer.toString(good.getId()).equals(id)){
-                editTextCode.setText(codeIntent);
-                editTextName.setText(nameIntent);
-                editTextLocation.setText(locationIntent);
-                editTextQuantity.setText(QuantityIntent);
-                editTextMinimalRemain.setText(MinimalRemainIntent);
+            try {
+                String id = arguments.get("goodId").toString();
+                if (Integer.toString(good.getId()).equals(id)){
+                    String codeIntent = arguments.get("goodCode").toString();
+                    String nameIntent = arguments.get("goodName").toString();
+                    String locationIntent = arguments.get("goodLocation").toString();
+                    String QuantityIntent = arguments.get("goodQuantity").toString();
+                    String MinimalRemainIntent = arguments.get("goodMinimalRemain").toString();
+                    String currentWorkerLevel = arguments.get("currentWorkerLevel").toString();
+                    editTextCode.setText(codeIntent);
+                    editTextName.setText(nameIntent);
+                    editTextLocation.setText(locationIntent);
+                    editTextQuantity.setText(QuantityIntent);
+                    editTextMinimalRemain.setText(MinimalRemainIntent);
+                    if (currentWorkerLevel.equals("Частичный")){
+                        editTextCode.setEnabled(false);
+                        editTextName.setEnabled(false);
+                        editTextLocation.setEnabled(false);
+                        editTextMinimalRemain.setEnabled(false);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -81,13 +93,17 @@ public class GoodEditorActivity extends AppCompatActivity {
             case R.id.action_save:
                 goodList = dbHelper.getAllGoods();
                 Intent intent = getIntent();
-                int id = intent.getExtras().getInt("goodId");
-                for (Good good : goodList){
-                if (good.getId() == id) {
-                    saveGood(id);
-                    finish();
-                    return true;
+                try {
+                    int id = intent.getExtras().getInt("goodId");
+                    for (Good good : goodList){
+                        if (good.getId() == id) {
+                            saveGood(id);
+                            finish();
+                            return true;
+                        }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 insertGood();
                 // Закрываем активность

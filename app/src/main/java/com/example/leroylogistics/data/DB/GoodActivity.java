@@ -27,7 +27,10 @@ public class GoodActivity extends AppCompatActivity {
 
     private static final int DB_DELETE_RECORD = 1;
     private static final int DB_EDIT_RECORD = 2;
+    private static final String TAG = "workerLevel";
+    public static String workerLevel;
     ListView listView;
+    List<Worker> workerList;
     List<Good> goodList;
     DBHelper dbHelper;
     SQLiteDatabase db;
@@ -41,14 +44,21 @@ public class GoodActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         dbHelper = new DBHelper(this);
         listView = (ListView) findViewById(R.id.lvDataGood);
-        registerForContextMenu(listView);
+
     }
 
     @Override
     protected void onStart() {
+        workerList = dbHelper.getAllWorkerCodes();
+
         super.onStart();
         displayDataBaseInfo();
         goodList = dbHelper.getAllGoods();
+        registerForContextMenu(listView);
+
+        Intent getIntent = getIntent();
+        workerLevel = getIntent.getExtras().getString("currentWorkerLevel");
+        Log.d(TAG, "onCreateContextMenu: Достал уровень доступа " + workerLevel);
     }
 
     private void displayDataBaseInfo() {
@@ -78,8 +88,20 @@ public class GoodActivity extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.add(Menu.NONE, DB_DELETE_RECORD, Menu.NONE, R.string.delete_record);
-        menu.add(Menu.NONE, DB_EDIT_RECORD, Menu.NONE, R.string.edit_record);
+        try {
+
+            Log.d(TAG, "onCreateContextMenu: workerLevel " + workerLevel);
+            if (workerLevel.equals("Полный")) {
+                menu.add(Menu.NONE, DB_DELETE_RECORD, Menu.NONE, R.string.delete_record);
+                menu.add(Menu.NONE, DB_EDIT_RECORD, Menu.NONE, R.string.edit_record);
+            }
+            else if (workerLevel.equals("Частичный")){
+                menu.add(Menu.NONE, DB_EDIT_RECORD, Menu.NONE, R.string.edit_record);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public boolean onContextItemSelected(MenuItem item) {
@@ -102,6 +124,7 @@ public class GoodActivity extends AppCompatActivity {
                         intent_edit.putExtra("goodLocation", good.getLocation());
                         intent_edit.putExtra("goodQuantity", good.getQuantity());
                         intent_edit.putExtra("goodMinimalRemain", good.getMinimalRemain());
+                        intent_edit.putExtra("currentWorkerLevel", workerLevel);
                         startActivity(intent_edit);
                     }
                 }

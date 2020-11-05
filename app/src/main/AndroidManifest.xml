@@ -20,7 +20,8 @@
         </activity>
         <activity android:name=".data.DB.WorkerListViewActivity" />
         <activity android:name=".data.DB.WorkersEditorActivity" />
-        <activity android:name=".data.DB.GoodActivity" />
+        <activity android:name=".data.DB.GoodActivity"
+            android:screenOrientation="landscape"/>
         <activity android:name=".data.goodsTest.GoodsActivity" />
         <activity android:name=".data.DB.GoodEditorActivity"
             android:screenOrientation="landscape"/>

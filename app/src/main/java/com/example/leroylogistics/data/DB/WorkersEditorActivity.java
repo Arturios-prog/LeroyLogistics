@@ -56,20 +56,23 @@ public class WorkersEditorActivity extends AppCompatActivity {
         workerList = dbHelper.getAllWorkers();
         Log.d(TAG, "onStart: Получил");
         Bundle arguments = getIntent().getExtras();
-        String codeIntent = arguments.get("workerCode").toString();
-        String nameIntent = arguments.get("workerName").toString();
-        String level = arguments.get("workerLevel").toString();
         Log.d(TAG, "onStart: получаю интент");
         for (Worker worker : workerList){
-            String id = arguments.get("workerId").toString();
-            Log.d(TAG, "onStart: получаю следующий id " + id);
-            if (Integer.toString(worker.getId()).equals(id)){
-
-                mNameEditText.setText(nameIntent);
-                mCodeEditText.setText(codeIntent);
-                if (level.equals("Полный")) spinner.setSelection(2);
-                else if (level.equals("Частичный")) spinner.setSelection(1);
-                else if (level.equals("-")) spinner.setSelection(0);
+            try {
+                String id = arguments.get("workerId").toString();
+                Log.d(TAG, "onStart: получаю следующий id " + id);
+                if (Integer.toString(worker.getId()).equals(id)){
+                    String codeIntent = arguments.get("workerCode").toString();
+                    String nameIntent = arguments.get("workerName").toString();
+                    String level = arguments.get("workerLevel").toString();
+                    mNameEditText.setText(nameIntent);
+                    mCodeEditText.setText(codeIntent);
+                    if (level.equals("Полный")) spinner.setSelection(2);
+                    else if (level.equals("Частичный")) spinner.setSelection(1);
+                    else if (level.equals("-")) spinner.setSelection(0);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -130,14 +133,18 @@ public class WorkersEditorActivity extends AppCompatActivity {
                 Intent intent_save = getIntent();
 
                 workerList = dbHelper.getAllWorkers();
-                int id = intent_save.getExtras().getInt("workerId");
-                for (Worker worker : workerList){
-                    if (worker.getId() == id){
-                        Log.d(TAG, "onOptionsItemSelected: Сохраняю изменения");
-                        saveWorker(id);
-                        finish();
-                        return true;
+                try {
+                    int id = intent_save.getExtras().getInt("workerId");
+                    for (Worker worker : workerList){
+                        if (worker.getId() == id){
+                            Log.d(TAG, "onOptionsItemSelected: Сохраняю изменения");
+                            saveWorker(id);
+                            finish();
+                            return true;
+                        }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 Log.d(TAG, "Я вставлю сотрудника");
                 insertWorker();
