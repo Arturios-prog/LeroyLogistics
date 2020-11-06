@@ -11,16 +11,23 @@ import android.widget.EditText;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.leroylogistics.R;
+import com.example.leroylogistics.data.model.Good;
 import com.example.leroylogistics.data.model.Worker;
 
 import java.util.List;
 
-public class Dialog extends DialogFragment implements View.OnClickListener {
-    private List<Worker> workerList;
+public class DialogGood extends DialogFragment implements View.OnClickListener{
+    private List<Good> goodList;
     private DBHelper dbHelper;
     private EditText editText;
     public String code;
     final String LOG_TAG = "myLogs";
+
+    RefreshInterface refreshInterface;
+
+    public void setRefreshInterface(RefreshInterface refreshInterface) {
+        this.refreshInterface = refreshInterface;
+    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -34,12 +41,16 @@ public class Dialog extends DialogFragment implements View.OnClickListener {
 
     public void onClick(View v) {
         Log.d(LOG_TAG, "Dialog 1: " + ((Button) v).getText());
-        workerList = dbHelper.getAllWorkers();
-        for (Worker worker : workerList){
-            if (worker.getCode().equals(editText.getText().toString())){
-                code = worker.getCode();
+        goodList = dbHelper.getAllGoods();
+        code = "";
+        for (Good good : goodList){
+            if (good.getCode().equals(editText.getText().toString())){
+                code = good.getCode();
             }
         }
+
+        refreshInterface.refresh();
+        code = null;
         dismiss();
     }
 

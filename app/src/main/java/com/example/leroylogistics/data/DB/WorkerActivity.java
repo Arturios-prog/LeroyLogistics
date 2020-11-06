@@ -22,12 +22,12 @@ import com.example.leroylogistics.data.model.Worker;
 
 import java.util.List;
 
-public class WorkerActivity extends AppCompatActivity {
+public class WorkerActivity extends AppCompatActivity implements RefreshInterface{
     private static final int DB_DELETE_RECORD = 1;
     private static final int DB_EDIT_RECORD = 2;
     private static final String TAG = "worker";
     public ListView lvData;
-    Dialog dlg1;
+    DialogWorker dlg1;
 
     DBHelper dbHelper;
     SQLiteDatabase db;
@@ -45,7 +45,7 @@ public class WorkerActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         lvData = (ListView) findViewById(R.id.lvData);
         registerForContextMenu(lvData);
-        dlg1 = new Dialog();
+        dlg1 = new DialogWorker();
     }
 
     public void onCreateContextMenu(ContextMenu menu, View v,
@@ -102,14 +102,26 @@ public class WorkerActivity extends AppCompatActivity {
         super.onResume();
         workerList = dbHelper.getAllWorkers();
         displayDataBaseInfo();
+        Log.d(TAG, "onResume: Открыл");
     }
 
     private void displayDataBaseInfo() {
         db = dbHelper.getWritableDatabase();
 
         if (dlg1.getDialogCode() != null){
-            for (Worker worker : workerList){
-                if (dlg1.getDialogCode().equals(worker.getCode())){
+            Log.d(TAG, "dialogcode: " + dlg1.getDialogCode());
+            for (Worker worker : workerList) {
+                if (dlg1.getDialogCode().equals(worker.getCode())) {
+                    String[] from = new String[]{WorkerEntry.COLUMN_CODE, WorkerEntry.COLUMN_INITIALS, WorkerEntry.COLUMN_LEVEL};
+                    int[] to = new int[]{R.id.textWorkerCode, R.id.tvText, R.id.tvLevel};
+
+                    cursor = db.query(WorkerEntry.WORKER_TABLE_NAME, null, "code = ?", new String[]{dlg1.getDialogCode()}, null, null, null);
+                    // создааем адаптер и настраиваем список
+                    scAdapter = new SimpleCursorAdapter(this, R.layout.list_worker_item, cursor, from, to);
+                    lvData.setAdapter(scAdapter);
+                    scAdapter.notifyDataSetChanged();
+                }
+                else{
                     String[] from = new String[]{WorkerEntry.COLUMN_CODE, WorkerEntry.COLUMN_INITIALS, WorkerEntry.COLUMN_LEVEL};
                     int[] to = new int[]{R.id.textWorkerCode, R.id.tvText, R.id.tvLevel};
 
@@ -120,6 +132,7 @@ public class WorkerActivity extends AppCompatActivity {
                     scAdapter.notifyDataSetChanged();
                 }
             }
+
         }
         else {
             // формируем столбцы сопоставления
@@ -159,7 +172,15 @@ public class WorkerActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        dlg1.setRefreshInterface(this);
         dlg1.show(getSupportFragmentManager(), "dlg1");
         return true;
+    }
+
+    @Override
+    public void refresh() {
+        workerList = dbHelper.getAllWorkers();
+        displayDataBaseInfo();
+        Log.d(TAG, "refresh: Рефрешнул");
     }
 }
