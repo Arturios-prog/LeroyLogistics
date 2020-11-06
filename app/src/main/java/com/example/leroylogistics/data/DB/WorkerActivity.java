@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -14,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.leroylogistics.R;
@@ -22,11 +22,13 @@ import com.example.leroylogistics.data.model.Worker;
 
 import java.util.List;
 
-public class WorkerListViewActivity extends AppCompatActivity {
+public class WorkerActivity extends AppCompatActivity {
     private static final int DB_DELETE_RECORD = 1;
     private static final int DB_EDIT_RECORD = 2;
     private static final String TAG = "worker";
-    ListView lvData;
+    public ListView lvData;
+    Dialog dlg1;
+
     DBHelper dbHelper;
     SQLiteDatabase db;
     SimpleCursorAdapter scAdapter;
@@ -43,6 +45,7 @@ public class WorkerListViewActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         lvData = (ListView) findViewById(R.id.lvData);
         registerForContextMenu(lvData);
+        dlg1 = new Dialog();
     }
 
     public void onCreateContextMenu(ContextMenu menu, View v,
@@ -91,24 +94,46 @@ public class WorkerListViewActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        displayDataBaseInfo();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         workerList = dbHelper.getAllWorkers();
+        displayDataBaseInfo();
     }
 
     private void displayDataBaseInfo() {
-
         db = dbHelper.getWritableDatabase();
 
-        // формируем столбцы сопоставления
-        String[] from = new String[]{WorkerEntry.COLUMN_CODE, WorkerEntry.COLUMN_INITIALS, WorkerEntry.COLUMN_LEVEL};
-        int[] to = new int[]{R.id.textWorkerCode, R.id.tvText, R.id.tvLevel};
+        if (dlg1.getDialogCode() != null){
+            for (Worker worker : workerList){
+                if (dlg1.getDialogCode().equals(worker.getCode())){
+                    String[] from = new String[]{WorkerEntry.COLUMN_CODE, WorkerEntry.COLUMN_INITIALS, WorkerEntry.COLUMN_LEVEL};
+                    int[] to = new int[]{R.id.textWorkerCode, R.id.tvText, R.id.tvLevel};
 
-        cursor = db.query(WorkerEntry.WORKER_TABLE_NAME, null, null, null, null, null, null);
-        startManagingCursor(cursor);
+                    cursor = db.query(WorkerEntry.WORKER_TABLE_NAME, null, "code = ?", new String[] {dlg1.getDialogCode()}, null, null, null);
+                    // создааем адаптер и настраиваем список
+                    scAdapter = new SimpleCursorAdapter(this, R.layout.list_worker_item, cursor, from, to);
+                    lvData.setAdapter(scAdapter);
+                    scAdapter.notifyDataSetChanged();
+                }
+            }
+        }
+        else {
+            // формируем столбцы сопоставления
+            String[] from = new String[]{WorkerEntry.COLUMN_CODE, WorkerEntry.COLUMN_INITIALS, WorkerEntry.COLUMN_LEVEL};
+            int[] to = new int[]{R.id.textWorkerCode, R.id.tvText, R.id.tvLevel};
 
-        // создааем адаптер и настраиваем список
+            cursor = db.query(WorkerEntry.WORKER_TABLE_NAME, null, null, null, null, null, null);
+            startManagingCursor(cursor);
+
+            // создааем адаптер и настраиваем список
             scAdapter = new SimpleCursorAdapter(this, R.layout.list_worker_item, cursor, from, to);
-        lvData.setAdapter(scAdapter);
+            lvData.setAdapter(scAdapter);
+            scAdapter.notifyDataSetChanged();
+        }
     }
 
 
@@ -120,7 +145,21 @@ public class WorkerListViewActivity extends AppCompatActivity {
     }
 
     public void addWorker(View view) {
-        Intent intent = new Intent(WorkerListViewActivity.this, WorkersEditorActivity.class);
+        Intent intent = new Intent(WorkerActivity.this, WorkersEditorActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu options from the res/menu/menu_editor.xml file.
+        // This adds menu items to the app bar.
+        getMenuInflater().inflate(R.menu.menu_find, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        dlg1.show(getSupportFragmentManager(), "dlg1");
+        return true;
     }
 }

@@ -27,6 +27,14 @@
     <string name="level_full">Полный доступ</string>
 
     <string name="edit_record">Редактировать запись</string>
+    <string name="dialog_about_title">Введите код сотрудника</string>
+    <string name="dialog_about_message">Введите код сотрудника</string>
+    <string name="dialog_rate_title">Оцени</string>
+    <string name="dialog_rate_message">Оцени</string>
+    <string name="dialog_rate_ok">Ок</string>
+    <string name="dialog_rate_cancel">Отмена</string>
+    <string name="dialog_rate_buy">Купить</string>
+    <string name="message_text">Введите код сотрудника</string>
     <string-array name="array_gender_options">
         <item>@string/level_off</item>
         <item>@string/level_on</item>

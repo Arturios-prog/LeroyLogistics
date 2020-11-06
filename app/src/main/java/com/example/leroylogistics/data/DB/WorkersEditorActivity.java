@@ -151,10 +151,6 @@ public class WorkersEditorActivity extends AppCompatActivity {
                 // Закрываем активность
                 finish();
                 return true;
-            // Respond to a click on the "Delete" menu option
-            case R.id.action_delete:
-                // Do nothing for now
-                return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
                 // Navigate back to parent activity (CatalogActivity)

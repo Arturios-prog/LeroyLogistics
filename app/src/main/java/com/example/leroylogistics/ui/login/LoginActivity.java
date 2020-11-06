@@ -28,7 +28,7 @@ import com.example.leroylogistics.R;
 //import com.example.leroylogistics.data.workersDB.WorkerGridViewActivity;
 import com.example.leroylogistics.data.model.Worker;
 import com.example.leroylogistics.data.DB.GoodActivity;
-import com.example.leroylogistics.data.DB.WorkerListViewActivity;
+import com.example.leroylogistics.data.DB.WorkerActivity;
 import com.example.leroylogistics.data.DB.DBHelper;
 
 import java.util.List;
@@ -107,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 //Complete and destroy login activity once successful
                 if (isAdmin == 2) {
-                    Intent intent = new Intent(getApplicationContext(), WorkerListViewActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), WorkerActivity.class);
                     Log.d(TAG, "Переходим в активность сотрудников");
                     startActivity(intent);
                 }

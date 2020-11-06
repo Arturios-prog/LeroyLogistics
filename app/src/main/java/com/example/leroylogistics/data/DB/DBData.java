@@ -3,7 +3,7 @@ package com.example.leroylogistics.data.DB;
 public class DBData {
 
     public static final String DB_NAME = "mydb";
-    public static final int DB_VERSION = 10;
+    public static final int DB_VERSION = 11;
 
     public static final class WorkerEntry {
 

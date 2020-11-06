@@ -18,7 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".data.DB.WorkerListViewActivity" />
+        <activity android:name=".data.DB.WorkerActivity" />
         <activity android:name=".data.DB.WorkersEditorActivity" />
         <activity android:name=".data.DB.GoodActivity"
             android:screenOrientation="landscape"/>

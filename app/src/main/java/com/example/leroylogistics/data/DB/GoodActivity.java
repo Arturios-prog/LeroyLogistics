@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -36,6 +37,7 @@ public class GoodActivity extends AppCompatActivity {
     SQLiteDatabase db;
     SimpleCursorAdapter scAdapter;
     Cursor cursor;
+    Button button;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,7 +46,7 @@ public class GoodActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         dbHelper = new DBHelper(this);
         listView = (ListView) findViewById(R.id.lvDataGood);
-
+        button = findViewById(R.id.button_add_good);
     }
 
     @Override
@@ -59,6 +61,9 @@ public class GoodActivity extends AppCompatActivity {
         Intent getIntent = getIntent();
         workerLevel = getIntent.getExtras().getString("currentWorkerLevel");
         Log.d(TAG, "onCreateContextMenu: Достал уровень доступа " + workerLevel);
+        if (workerLevel.equals("-") || workerLevel.equals("Частичный")){
+            button.setEnabled(false);
+        }
     }
 
     private void displayDataBaseInfo() {
