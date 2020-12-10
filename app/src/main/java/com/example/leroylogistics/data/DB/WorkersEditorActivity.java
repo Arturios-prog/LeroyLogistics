@@ -17,14 +17,20 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
-import com.example.leroylogistics.data.DB.DBData.*;
 
 import com.example.leroylogistics.R;
+import com.example.leroylogistics.data.DB.DBData.*;
+
+
 import com.example.leroylogistics.data.model.Worker;
 
 import java.util.List;
-
+/**
+ * Данный класс отображает активти редактирования/добавления сотрудника. Вызывается из WorkerActivity
+ * Здесь можно задать Код, ФИО, а также уровень доступа сотрудника
+ */
 public class WorkersEditorActivity extends AppCompatActivity {
+
     private static final String TAG = "worker";
     private EditText mNameEditText;
     private EditText mCodeEditText;
@@ -49,6 +55,10 @@ public class WorkersEditorActivity extends AppCompatActivity {
         setupSpinner();
     }
 
+    /**
+     * Получаем данные и изменяем из БД, если в контекстном меню нажали на редактирование
+     * Добавляем новые данные, если нажали на добавление
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -116,19 +126,22 @@ public class WorkersEditorActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Inflate the menu options from the res/menu/menu_editor.xml file.
+     * This adds menu items to the app bar.*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu options from the res/menu/menu_editor.xml file.
-        // This adds menu items to the app bar.
         getMenuInflater().inflate(R.menu.menu_editor, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // User clicked on a menu option in the app bar overflow menu
+        /**
+         * User clicked on a menu option in the app bar overflow menu */
         switch (item.getItemId()) {
-            // Respond to a click on the "Save" menu option
+            /**
+             * Respond to a click on the "Save" menu option */
             case R.id.action_save:
                 Intent intent_save = getIntent();
 
@@ -148,12 +161,15 @@ public class WorkersEditorActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, "Я вставлю сотрудника");
                 insertWorker();
-                // Закрываем активность
+                /**
+                 * Закрываем активность */
                 finish();
                 return true;
-            // Respond to a click on the "Up" arrow button in the app bar
+            /**
+             * Respond to a click on the "Up" arrow button in the app bar */
             case android.R.id.home:
-                // Navigate back to parent activity (CatalogActivity)
+                /**
+                 * Navigate back to parent activity (CatalogActivity) */
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
         }
@@ -179,7 +195,8 @@ public class WorkersEditorActivity extends AppCompatActivity {
      * Сохраняем введенные данные в базе данных.
      */
     private void insertWorker() {
-        // Считываем данные из текстовых полей
+        /**
+         * Считываем данные из текстовых полей */
         String name = mNameEditText.getText().toString().trim();
         String code = mCodeEditText.getText().toString().trim();
 
@@ -191,12 +208,15 @@ public class WorkersEditorActivity extends AppCompatActivity {
         values.put(WorkerEntry.COLUMN_CODE, code);
         values.put(WorkerEntry.COLUMN_INITIALS, name);
         values.put(WorkerEntry.COLUMN_LEVEL, levelIntToString(mLevel));
-        // Вставляем новый ряд в базу данных и запоминаем его идентификатор
+        /**
+         * Вставляем новый ряд в базу данных и запоминаем его идентификатор */
         long newRowId = db.insert(WorkerEntry.WORKER_TABLE_NAME, null, values);
 
-        // Выводим сообщение в успешном случае или при ошибке
+        /**
+         *  Выводим сообщение в успешном случае или при ошибке */
         if (newRowId == -1) {
-            // Если ID  -1, значит произошла ошибка
+            /**
+             * Если ID  -1, значит произошла ошибка */
             Toast.makeText(this, "Ошибка при заведении сотрудника", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Сотрудник заведён под номером: " + newRowId, Toast.LENGTH_SHORT).show();
@@ -204,7 +224,8 @@ public class WorkersEditorActivity extends AppCompatActivity {
     }
 
     private void saveWorker(int id) {
-        // Считываем данные из текстовых полей
+        /**
+         * Считываем данные из текстовых полей */
         String name = mNameEditText.getText().toString().trim();
         String code = mCodeEditText.getText().toString().trim();
         ContentValues values = new ContentValues();
@@ -217,7 +238,8 @@ public class WorkersEditorActivity extends AppCompatActivity {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         long newRowId = db.update(WorkerEntry.WORKER_TABLE_NAME, values, "_id=" + id, null);
         if (newRowId == -1) {
-            // Если ID  -1, значит произошла ошибка
+            /**
+             * Если ID  -1, значит произошла ошибка */
             Toast.makeText(this, "Ошибка при редактировании сотрудника", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Сотрудник отредактирован под номером: " + newRowId, Toast.LENGTH_SHORT).show();

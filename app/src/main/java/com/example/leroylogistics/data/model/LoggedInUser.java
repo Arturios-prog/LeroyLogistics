@@ -1,7 +1,7 @@
 package com.example.leroylogistics.data.model;
 
 /**
- * Data class that captures user information for logged in users retrieved from LoginRepository
+ * Класс, отвечающий за хранение информации о залогиненых пользователях
  */
 public class LoggedInUser {
 

@@ -1,6 +1,10 @@
 package com.example.leroylogistics.data.model;
-
+/**
+ * Данный класс является объектом сотрудника. Содержит в себе 4 поля: id, код, ФИО, а также
+ * уровень доступа
+ */
 public class Worker {
+
     private int id;
     private String code;
     private String name;

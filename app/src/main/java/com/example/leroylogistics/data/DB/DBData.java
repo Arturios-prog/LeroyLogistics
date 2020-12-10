@@ -1,6 +1,8 @@
 package com.example.leroylogistics.data.DB;
-
+/**
+ * В данном классе хранится вся информация, касающаяся базы данных, а также ее таблиц */
 public class DBData {
+
 
     public static final String DB_NAME = "mydb";
     public static final int DB_VERSION = 11;

@@ -101,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                     showLoginFailed(loginResult.getError());
                 }
                 if (loginResult.getSuccess() != null) {
-                    updateUiWithUser(loginResult.getSuccess());
+                    //updateUiWithUser(loginResult.getSuccess());
                 }
                 setResult(Activity.RESULT_OK);
 

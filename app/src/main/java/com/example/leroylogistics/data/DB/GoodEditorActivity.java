@@ -18,8 +18,11 @@ import com.example.leroylogistics.R;
 import com.example.leroylogistics.data.model.Good;
 
 import java.util.List;
-
+/**
+ *Данный класс отвечает за активити редактирования товара
+ */
 public class GoodEditorActivity extends AppCompatActivity {
+
     private EditText editTextCode;
     private EditText editTextName;
     private EditText editTextLocation;
@@ -42,6 +45,11 @@ public class GoodEditorActivity extends AppCompatActivity {
         editTextMinimalRemain = (EditText) findViewById(R.id.edit_good_minimal_remain);
     }
 
+    /**
+     * Из предыдущего активити получаем данные и заполняем ими соответствующие поля
+     * Для сотрудника с частичным уровнем доступа оставляем лишь функцию изменения количества товара
+     * На остальные поля он нажать не может
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -77,19 +85,19 @@ public class GoodEditorActivity extends AppCompatActivity {
         }
     }
 
+    /**Inflate the menu options from the res/menu/menu_editor.xml file.
+     * This adds menu items to the app bar. */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu options from the res/menu/menu_editor.xml file.
-        // This adds menu items to the app bar.
         getMenuInflater().inflate(R.menu.menu_editor, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // User clicked on a menu option in the app bar overflow menu
+        /** User clicked on a menu option in the app bar overflow menu*/
         switch (item.getItemId()) {
-            // Respond to a click on the "Save" menu option
+            /**Respond to a click on the "Save" menu option*/
             case R.id.action_save:
                 goodList = dbHelper.getAllGoods();
                 Intent intent = getIntent();
@@ -106,20 +114,21 @@ public class GoodEditorActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 insertGood();
-                // Закрываем активность
+                /**Закрываем активность */
                 finish();
                 return true;
-            // Respond to a click on the "Up" arrow button in the app bar
+            /** Respond to a click on the "Up" arrow button in the app bar*/
             case android.R.id.home:
-                // Navigate back to parent activity (CatalogActivity)
+                /**Navigate back to parent activity (CatalogActivity) */
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
+/**
+*Функция сохранения товара, в зависимости от введенных в поля значений */
     private void saveGood(int id) {
-        // Считываем данные из текстовых полей
+        /** Считываем данные из текстовых полей */
         String code = editTextCode.getText().toString().trim();
         String name = editTextName.getText().toString().trim();
         String location = editTextLocation.getText().toString().trim();
@@ -137,20 +146,21 @@ public class GoodEditorActivity extends AppCompatActivity {
         values.put(DBData.GoodEntry.COLUMN_LOCATION, location);
         values.put(DBData.GoodEntry.COLUMN_QUANTITY, quantity);
         values.put(DBData.GoodEntry.COLUMN_MINIMAL_REMAIN, minimalRemain);
-        // Вставляем новый ряд в базу данных и запоминаем его идентификатор
+        /** Вставляем новый ряд в базу данных и запоминаем его идентификатор */
         long newRowId = db.update(DBData.GoodEntry.GOOD_TABLE_NAME, values, "_id=" + id, null);
 
-        // Выводим сообщение в успешном случае или при ошибке
+        /**Выводим сообщение в успешном случае или при ошибке */
         if (newRowId == -1) {
-            // Если ID  -1, значит произошла ошибка
+            /**Если ID  -1, значит произошла ошибка */
             Toast.makeText(this, "Ошибка при сохранении товара", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Товар сохранен под номером: " + newRowId, Toast.LENGTH_SHORT).show();
         }
     }
 
+
     private void insertGood() {
-        // Считываем данные из текстовых полей
+        /**Считываем данные из текстовых полей */
         String code = editTextCode.getText().toString().trim();
         String name = editTextName.getText().toString().trim();
         String location = editTextLocation.getText().toString().trim();
@@ -168,12 +178,12 @@ public class GoodEditorActivity extends AppCompatActivity {
         values.put(DBData.GoodEntry.COLUMN_LOCATION, location);
         values.put(DBData.GoodEntry.COLUMN_QUANTITY, quantity);
         values.put(DBData.GoodEntry.COLUMN_MINIMAL_REMAIN, minimalRemain);
-        // Вставляем новый ряд в базу данных и запоминаем его идентификатор
+        /**Вставляем новый ряд в базу данных и запоминаем его идентификатор */
         long newRowId = db.insert(DBData.GoodEntry.GOOD_TABLE_NAME, null, values);
 
-        // Выводим сообщение в успешном случае или при ошибке
+        /** Выводим сообщение в успешном случае или при ошибке */
         if (newRowId == -1) {
-            // Если ID  -1, значит произошла ошибка
+            /**Если ID  -1, значит произошла ошибка */
             Toast.makeText(this, "Ошибка при заведении товара", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Товар заведён под номером: " + newRowId, Toast.LENGTH_SHORT).show();

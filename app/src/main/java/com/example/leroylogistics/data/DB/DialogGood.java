@@ -15,8 +15,11 @@ import com.example.leroylogistics.data.model.Good;
 import com.example.leroylogistics.data.model.Worker;
 
 import java.util.List;
-
+/**
+ * Данный класс отвечает за генерацию диалогового окна поиска товаров по коду
+ */
 public class DialogGood extends DialogFragment implements View.OnClickListener{
+
     private List<Good> goodList;
     private DBHelper dbHelper;
     private EditText editText;
@@ -39,10 +42,12 @@ public class DialogGood extends DialogFragment implements View.OnClickListener{
         return v;
     }
 
+    /** Получаем все коды товаров из базы данных, а затем сверяем каждый из них с введенным
+     Если есть совпадение, присваиваем это код переменной code и обновляем список*/
     public void onClick(View v) {
         Log.d(LOG_TAG, "Dialog 1: " + ((Button) v).getText());
         goodList = dbHelper.getAllGoods();
-        code = "";
+        code = editText.getText().toString();
         for (Good good : goodList){
             if (good.getCode().equals(editText.getText().toString())){
                 code = good.getCode();

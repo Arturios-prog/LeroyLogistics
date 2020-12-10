@@ -16,7 +16,11 @@ import com.example.leroylogistics.data.model.Worker;
 import java.sql.Ref;
 import java.util.List;
 
+/**
+ * Данный класс отвечает за генерацию диалогового окна и поиска сотрудника по его коду
+ */
 public class DialogWorker extends DialogFragment implements View.OnClickListener {
+
     private List<Worker> workerList;
     private DBHelper dbHelper;
     private EditText editText;
@@ -42,7 +46,7 @@ public class DialogWorker extends DialogFragment implements View.OnClickListener
     public void onClick(View v) {
         Log.d(LOG_TAG, "Dialog 1: " + ((Button) v).getText());
         workerList = dbHelper.getAllWorkers();
-        code = "";
+        code = editText.getText().toString();
         for (Worker worker : workerList){
             if (worker.getCode().equals(editText.getText().toString())){
                 code = worker.getCode();
@@ -56,5 +60,8 @@ public class DialogWorker extends DialogFragment implements View.OnClickListener
 
     public String getDialogCode() {
         return code;
+    }
+    public void setDialogCode(String dialogCode){
+        code = dialogCode;
     }
 }

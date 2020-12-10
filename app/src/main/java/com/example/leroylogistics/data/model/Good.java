@@ -1,6 +1,10 @@
 package com.example.leroylogistics.data.model;
-
+/**
+ * Данный класс является объектом товара. Состоит из 6 полей: id, код, наименование, расположение
+ * количество и минимальный остаток
+ */
 public class Good {
+
     private int id;
     private String code;
     private String name;

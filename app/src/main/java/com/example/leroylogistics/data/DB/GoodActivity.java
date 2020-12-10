@@ -25,7 +25,13 @@ import com.example.leroylogistics.data.model.Worker;
 
 import java.util.List;
 
+
+/**
+ * Данный класс содержит в себе список товаров, взятый из БД и отвечает за его отображение, а также
+ * за все операции с ним
+ */
 public class GoodActivity extends AppCompatActivity implements RefreshInterface{
+
 
     private static final int DB_DELETE_RECORD = 1;
     private static final int DB_EDIT_RECORD = 2;
@@ -41,6 +47,7 @@ public class GoodActivity extends AppCompatActivity implements RefreshInterface{
     Cursor cursor;
     Button button;
 
+    /** Открываем подключение к БД, инициализируем диалоговое окно поиска товаров*/
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +59,11 @@ public class GoodActivity extends AppCompatActivity implements RefreshInterface{
         button = findViewById(R.id.button_add_good);
     }
 
+    /** Достаем уровень доступа сотрудника из БД, по уровню доступа решаем, какой функционал нужно
+     * убрать, а какой оставить*/
     @Override
     protected void onStart() {
+
         super.onStart();
         workerList = dbHelper.getAllWorkerCodes();
         goodList = dbHelper.getAllGoods();
@@ -68,6 +78,7 @@ public class GoodActivity extends AppCompatActivity implements RefreshInterface{
         }
     }
 
+    /** Отображает список в зависимости от кода, введенного в диалоговое окно.*/
     private void displayDataBaseInfo() {
 
         db = dbHelper.getWritableDatabase();
@@ -77,7 +88,7 @@ public class GoodActivity extends AppCompatActivity implements RefreshInterface{
             for (Good good : goodList) {
                 if (dlg1.getDialogCode().equals(good.getCode())) {
                     Log.d(TAG, "displayDataBaseInfo: Совпало");
-                    // формируем столбцы сопоставления
+                    /** формируем столбцы сопоставления*/
                     String[] from = new String[]{DBData.GoodEntry.COLUMN_CODE,
                             DBData.GoodEntry.COLUMN_NAME, DBData.GoodEntry.COLUMN_LOCATION,
                             DBData.GoodEntry.COLUMN_QUANTITY, DBData.GoodEntry.COLUMN_MINIMAL_REMAIN};
@@ -87,14 +98,30 @@ public class GoodActivity extends AppCompatActivity implements RefreshInterface{
                     cursor = db.query(DBData.GoodEntry.GOOD_TABLE_NAME, null, DBData.GoodEntry.COLUMN_CODE
                             + " = ?", new String[] {dlg1.getDialogCode()}, null, null, null);
 
-                    // создааем адаптер и настраиваем список
+                    /** создаем адаптер и настраиваем список*/
+                    scAdapter = new SimpleCursorAdapter(this, R.layout.list_goods_item, cursor, from, to);
+                    listView.setAdapter(scAdapter);
+                    scAdapter.notifyDataSetChanged();
+                }
+                else if (dlg1.getDialogCode().equals("")){
+                    Log.d(TAG, "displayDataBaseInfo: ВЫвожу все");
+                    /** формируем столбцы сопоставления*/
+                    String[] from = new String[]{DBData.GoodEntry.COLUMN_CODE,
+                            DBData.GoodEntry.COLUMN_NAME, DBData.GoodEntry.COLUMN_LOCATION,
+                            DBData.GoodEntry.COLUMN_QUANTITY, DBData.GoodEntry.COLUMN_MINIMAL_REMAIN};
+                    int[] to = new int[]{R.id.textGoodCode, R.id.textGoodName, R.id.textGoodLocation,
+                            R.id.textGoodQuantity, R.id.textGoodMinimalRemain};
+
+                    cursor = db.query(DBData.GoodEntry.GOOD_TABLE_NAME, null, null, null, null, null, null);
+
+                    /** создаем адаптер и настраиваем список*/
                     scAdapter = new SimpleCursorAdapter(this, R.layout.list_goods_item, cursor, from, to);
                     listView.setAdapter(scAdapter);
                     scAdapter.notifyDataSetChanged();
                 }
                 else{
                     Log.d(TAG, "displayDataBaseInfo: Вывожу не все");
-                    // формируем столбцы сопоставления
+                    /** формируем столбцы сопоставления*/
                     String[] from = new String[]{DBData.GoodEntry.COLUMN_CODE,
                             DBData.GoodEntry.COLUMN_NAME, DBData.GoodEntry.COLUMN_LOCATION,
                             DBData.GoodEntry.COLUMN_QUANTITY, DBData.GoodEntry.COLUMN_MINIMAL_REMAIN};
@@ -104,7 +131,7 @@ public class GoodActivity extends AppCompatActivity implements RefreshInterface{
                     cursor = db.query(DBData.GoodEntry.GOOD_TABLE_NAME, null, DBData.GoodEntry.COLUMN_CODE
                             + " = ?", new String[] {dlg1.getDialogCode()}, null, null, null);
 
-                    // создааем адаптер и настраиваем список
+                    /** создаем адаптер и настраиваем список*/
                     scAdapter = new SimpleCursorAdapter(this, R.layout.list_goods_item, cursor, from, to);
                     listView.setAdapter(scAdapter);
                     scAdapter.notifyDataSetChanged();
@@ -113,8 +140,8 @@ public class GoodActivity extends AppCompatActivity implements RefreshInterface{
 
         }
         else {
-            Log.d(TAG, "displayDataBaseInfo: ВЫвожу все");
-            // формируем столбцы сопоставления
+            Log.d(TAG, "displayDataBaseInfo: Вывожу все");
+            /**формируем столбцы сопоставления*/
             String[] from = new String[]{DBData.GoodEntry.COLUMN_CODE,
                     DBData.GoodEntry.COLUMN_NAME, DBData.GoodEntry.COLUMN_LOCATION,
                     DBData.GoodEntry.COLUMN_QUANTITY, DBData.GoodEntry.COLUMN_MINIMAL_REMAIN};
@@ -123,18 +150,21 @@ public class GoodActivity extends AppCompatActivity implements RefreshInterface{
 
             cursor = db.query(DBData.GoodEntry.GOOD_TABLE_NAME, null, null, null, null, null, null);
 
-            // создааем адаптер и настраиваем список
+            /** создаем адаптер и настраиваем список*/
             scAdapter = new SimpleCursorAdapter(this, R.layout.list_goods_item, cursor, from, to);
             listView.setAdapter(scAdapter);
             scAdapter.notifyDataSetChanged();
         }
     }
 
+    /** При нажатии на кнопку переходим в новое активити добавления товара*/
     public void addGood(View view) {
         Intent intent = new Intent(GoodActivity.this, GoodEditorActivity.class);
         startActivity(intent);
     }
 
+    /** Создаем контекстное меню для товаров. В зависимости от уровня доступа, изменяем возможности
+     * контекстного меню*/
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -154,14 +184,19 @@ public class GoodActivity extends AppCompatActivity implements RefreshInterface{
 
     }
 
+    /**
+     * Отвечает за функции контекстного меню. При полном доступе сотрудник может удалить или изменить
+     * товар. Значения берутся прямиком из БД
+     */
     public boolean onContextItemSelected(MenuItem item) {
+
         AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case DB_DELETE_RECORD:
-                // получаем из пункта контекстного меню данные по пункту списка
-                // извлекаем id записи и удаляем соответствующую запись в БД
+                /** получаем из пункта контекстного меню данные по пункту списка
+                * извлекаем id записи и удаляем соответствующую запись в БД*/
                 db.delete(DBData.GoodEntry.GOOD_TABLE_NAME, DBData.GoodEntry.COLUMN_ID + " = " + acmi.id, null);
-                // обновляем курсор
+                /** обновляем курсор*/
                 cursor.requery();
                 return true;
             case DB_EDIT_RECORD:
@@ -181,14 +216,16 @@ public class GoodActivity extends AppCompatActivity implements RefreshInterface{
         }
         return super.onContextItemSelected(item);
     }
+
+    /** Inflate the menu options from the res/menu/menu_editor.xml file.
+     * This adds menu items to the app bar.*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu options from the res/menu/menu_editor.xml file.
-        // This adds menu items to the app bar.
         getMenuInflater().inflate(R.menu.menu_find, menu);
         return true;
     }
 
+    /** При вызове диалогового окна инициализируем рефреш-интерфейс*/
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         dlg1.setRefreshInterface(this);
@@ -196,6 +233,7 @@ public class GoodActivity extends AppCompatActivity implements RefreshInterface{
         return true;
     }
 
+    /** Получаем список товаров и обновляем список товаров*/
     @Override
     public void refresh() {
         goodList= dbHelper.getAllGoods();

@@ -14,8 +14,11 @@ import java.util.List;
 
 import static com.example.leroylogistics.data.DB.DBData.DB_NAME;
 import static com.example.leroylogistics.data.DB.DBData.DB_VERSION;
-
+/**
+ * В данном класе располагаются все команды, которые употребляются при обращении к базе данных
+ */
 public class DBHelper extends SQLiteOpenHelper {
+
     private SQLiteDatabase mDB;
     private static final String CREATE_TABLE_WORKER =
             "create table " + WorkerEntry.WORKER_TABLE_NAME + "(" +
@@ -42,13 +45,16 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    // создаем и заполняем БД
+
+    /** создаем и заполняем БД*/
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_WORKER);
         db.execSQL(CREATE_TABLE_GOOD);
         //db.execSQL(ADD_ADMIN);
     }
+
+    /** Удаляем данные из таблиц при обновлении БД*/
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + WorkerEntry.WORKER_TABLE_NAME);
@@ -56,6 +62,7 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /** Получаем все коды работников*/
     public List<Worker> getAllWorkerCodes() {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -79,6 +86,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return workerCodeList;
     }
 
+    /** Получаем всю информацию о работниках*/
     public List<Worker> getAllWorkers(){
         SQLiteDatabase db = this.getReadableDatabase();
         List<Worker> workerList = new ArrayList<>();
@@ -103,6 +111,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return workerList;
     }
 
+    /** Получаем всю инормацию о товарах*/
     public List<Good> getAllGoods(){
         SQLiteDatabase db = this.getReadableDatabase();
         List<Good> goodList = new ArrayList<>();
@@ -128,13 +137,5 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return goodList;
     }
-
-    /*public void deleteRecordWorker(long id){
-        mDB.delete(WorkerEntry.WORKER_TABLE_NAME, WorkerEntry.COLUMN_ID + " = " + id, null);
-    }
-
-    public void deleteRecordGood(long id){
-        mDB.delete(GoodEntry.GOOD_TABLE_NAME, GoodEntry.COLUMN_ID + " = " + id, null);
-    }*/
     
 }
